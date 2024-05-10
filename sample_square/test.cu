@@ -29,10 +29,17 @@ int main(int argc, char const *argv[])
     cudaMemcpy(d_in, h_in, ARRAY_BYTES, cudaMemcpyHostToDevice); // copy the input array from the host to the device
 
     square<<<1, ARRAY_SIZE>>>(d_out, d_in); // launch the kernel the characters <<< >>> are called execution configuration
-
-
+    // each thread can have at most 1024 threads, so we can have 1024 threads per block. 
+    // the first argument is the number of blocks, the second is the number of threads per block
     // scores are in d_out now, copy them back to the host. 
 
+
+    // this is the same thing as saying 
+
+    // square <<< dim3(1, 1, 1), dim3(ARRAY_SIZE, 1, 1), sharedMemSize >>> (d_out, d_in);
+
+    // sharedMemSize is the number of bytes in shared memory that is dynamically allocated per block for this call in addition to the statically allocated memory.
+    
     cudaMemcpy(h_out, d_out, ARRAY_BYTES, cudaMemcpyDeviceToHost);
 
     // there's also device to device memory copy
